@@ -100,7 +100,7 @@ public class VehiculoDAO {
 	 * @param nLinea != null Objeto de la clase Linea
 	 * @param nVehiculo != null Objeto de la clase Vehiculo
          */
-	public void agregar(Linea nLinea, Vehiculo nVehiculo) {
+	public void agregar(Marca nMarca, Linea nLinea, Vehiculo nVehiculo) {
             String agregar= "insert into vehiculo (vehiculo.placa, vehiculo.modelo, vehiculo.numero_pasajeros, vehiculo.fotografia, vehiculo.linea_nombre) "
                         + "values ( " + nVehiculo.getPlaca() + ", " + nVehiculo.getModelo() + ", " + nVehiculo.getNumeroPasajeros() + ", " + nVehiculo.getFotografia() + ", " + nLinea.getNombre() + ");";
             Connection con; 

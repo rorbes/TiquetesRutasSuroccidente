@@ -39,13 +39,11 @@ public class PropietarioDAO {
          * <pre:> Tener inicializado el enlace a la clase FachadaDB <br>
          * <post:> Realizar seleccion de un propietario de la base de datos <br>
 	 */
-	public ArrayList<Propietario> seleccionar(Marca nMarca, Linea nLinea, Vehiculo nVehiculo) {
-		ArrayList<Propietario> propietarios = new ArrayList<>();
+	public Propietario seleccionar(Vehiculo nVehiculo) {
+		Propietario p = null;
                 String seleccionar = "select propietario.identificacion, propetario.nombres, propetario.apellidos, propetario.direccion, propetario.telefono"
-                                    + " from propietario, marca, linea, vehiculo "
+                                    + " from propietario "
                                     + " where propietario.vehiculo_placa = " + nVehiculo.getPlaca()
-                                    + " and vehiculo.nombre_linea = " + nLinea.getNombre()
-                                    + " and linea.nombre_marca = " + nMarca.getNombre()
                                     + " order by propietario.nombres asc;";
                 PreparedStatement ps;
                 Connection con;
@@ -56,7 +54,7 @@ public class PropietarioDAO {
                 res = ps.executeQuery();
                 
                 while(res.next()){
-                    propietarios.add(new Propietario(res.getInt(1), res.getString(2), res.getString(3), res.getString(4), res.getInt(5)));
+                    p= new Propietario(res.getInt(1), res.getString(2), res.getString(3), res.getString(4), res.getInt(5));
                 }
                 fachada.desconectarDB(con);
             } catch (ClassNotFoundException ex) {
@@ -65,7 +63,7 @@ public class PropietarioDAO {
                 Logger.getLogger(PropietarioDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
 		
-                return propietarios;  
+                return p;  
 	}
 	
 	/**
