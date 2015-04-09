@@ -51,6 +51,7 @@ public class LineaDAO {
                 while(res.next()){
                     lineas.add(new Linea(res.getString(1)));
                 }
+                fachada.desconectarDB(con);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(LineaDAO.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {

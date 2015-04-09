@@ -57,6 +57,7 @@ public class VehiculoDAO {
                 while(res.next()){
                     vehiculos.add(new Vehiculo(res.getInt(1), res.getString(2), res.getInt(3), (BufferedImage) res.getBlob(4)));
                 }
+                fachada.desconectarDB(con);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(VehiculoDAO.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {

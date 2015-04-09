@@ -54,11 +54,12 @@ public class ClienteDAO {
                 while(res.next()){
                     clientes.add(new Cliente(res.getInt(1), res.getString(2), res.getString(3)));
                 }
+                fachada.desconectarDB(con);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
                 Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            } 
             return clientes;
 	}
 	

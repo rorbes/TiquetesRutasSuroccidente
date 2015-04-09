@@ -58,6 +58,7 @@ public class PropietarioDAO {
                 while(res.next()){
                     propietarios.add(new Propietario(res.getInt(1), res.getString(2), res.getString(3), res.getString(4), res.getInt(5)));
                 }
+                fachada.desconectarDB(con);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(PropietarioDAO.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
