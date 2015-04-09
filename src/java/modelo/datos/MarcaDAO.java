@@ -1,6 +1,7 @@
 package modelo.datos;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -38,40 +39,27 @@ public class MarcaDAO {
 	 * <b>post:</b> Se ha seleccionado y retornado las marcas almacenadas en la base de datos
 	 * @return La lista con las marcas seleccionadas
 	 */
-	public ArrayList<Marca> seleccionar() throws ClassNotFoundException, SQLException{
-                ArrayList<Marca> Marcas;
-                Marcas = new ArrayList();
-		String seleccionar="select marca.nombre from marca;";
-		Connection conexion;
+	public ArrayList<Marca> seleccionar() {
+            ArrayList<Marca> marcas = new ArrayList<>();
+            String seleccionar="select marca.nombre from marca";
+            PreparedStatement ps;
+            ResultSet res;
+            Connection con;
             try {
-                conexion = fachada.conectarDB();
-                if(conexion!=null)
-		{
-			java.sql.Statement instruccion;
-                    try {
-                        instruccion = (java.sql.Statement) conexion.createStatement();
-                        ResultSet resultado = null;
-			resultado = (ResultSet) instruccion.executeQuery(seleccionar);
-			while (resultado.next()) 
-			{
-				
-                            String nNombre = resultado.getString("marca.nombre");
-                            Marca marca = new Marca(nNombre);
-                            Marcas.add(marca);
+                con = fachada.conectarDB();
+                ps = con.prepareStatement(seleccionar);
+                res = ps.executeQuery();
 
-			}
-			fachada.desconectarDB(conexion);
-                    } catch (SQLException ex) {
-                        Logger.getLogger(MarcaDAO.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-			
-		}
+                while(res.next()){
+                    marcas.add(new Marca(res.getString(1)));
+                }
+                fachada.desconectarDB(con);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(MarcaDAO.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
                 Logger.getLogger(MarcaDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
-		return Marcas;
+            }             
+            return marcas;
 	}
 	
 	
@@ -82,26 +70,16 @@ public class MarcaDAO {
 	 * @param nMarca La marca actualizar en la base de datos nMarca!=null
          * @param vNombre != null && != "" Nombre de la marca a modificar
 	 */
-	public void actualizar(Marca nMarca, String vNombre)throws SQLException, ClassNotFoundException{
-             String actualizar= "update marca "
+	public void actualizar(Marca nMarca, String vNombre){
+            String actualizar= "update marca "
                                     + "set marca.nombre = " + nMarca.getNombre()   
-                                    + " where marca.nombre = " + vNombre + ";";
-                                   
-		Connection conexion;
+                                    + " where marca.nombre = " + vNombre ;
+            Connection con; 
+            PreparedStatement ps;
             try {
-                conexion = fachada.conectarDB();
-                if(conexion!=null)
-		{
-			java.sql.Statement instruccion;
-                    try {
-                        instruccion = (java.sql.Statement) conexion.createStatement();
-                        instruccion.executeUpdate(actualizar);
-			fachada.desconectarDB(conexion);
-                    } catch (SQLException ex) {
-                        Logger.getLogger(MarcaDAO.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-			
-		}
+                con = fachada.conectarDB();
+                ps = con.prepareStatement(actualizar);
+                fachada.desconectarDB(con);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(MarcaDAO.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
@@ -116,25 +94,16 @@ public class MarcaDAO {
 	 * <b>post:</b> Agregado una marca a la base de datos 
 	 * @param nMarca La marca a agregar a la base de datos
 	 */
-	public void agregar(Marca nMarca) throws ClassNotFoundException, SQLException{
+	public void agregar(Marca nMarca) {
             
             String agregar= "insert into marca (marca.nombre) "
                                 + "values ( " + nMarca.getNombre() + ");";
-		Connection conexion;
+            Connection con; 
+            PreparedStatement ps;
             try {
-                conexion = fachada.conectarDB();
-                if(conexion!=null)
-		{
-			java.sql.Statement instruccion;
-                    try {
-                        instruccion = (java.sql.Statement) conexion.createStatement();
-                        instruccion.executeUpdate(agregar);
-			fachada.desconectarDB(conexion);
-                    } catch (SQLException ex) {
-                        Logger.getLogger(MarcaDAO.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-			
-		}
+                con = fachada.conectarDB();
+                ps = con.prepareStatement(agregar);
+                fachada.desconectarDB(con);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(MarcaDAO.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
@@ -150,24 +119,15 @@ public class MarcaDAO {
 	 * <b>post:</b> Se ha eliminado la marca pasada como parametro de la base de datos
 	 * @param nMarca La marca a eliminar de la base de datos nMarca !=null
 	 */
-	public void eliminar(Marca nMarca) throws SQLException{
+	public void eliminar(Marca nMarca) {
            String eliminar= "delete from marca "
                                 + "where marca.nombre = " + nMarca.getNombre() + ";";
-		Connection conexion;
+           Connection con; 
+            PreparedStatement ps;
             try {
-                conexion = fachada.conectarDB();
-                if(conexion!=null)
-		{
-			java.sql.Statement instruccion;
-                    try {
-                        instruccion = (java.sql.Statement) conexion.createStatement();
-                        instruccion.executeUpdate(eliminar);
-			fachada.desconectarDB(conexion);
-                    } catch (SQLException ex) {
-                        Logger.getLogger(MarcaDAO.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-			
-		}
+                con = fachada.conectarDB();
+                ps = con.prepareStatement(eliminar);
+                fachada.desconectarDB(con);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(MarcaDAO.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
