@@ -36,7 +36,9 @@ public class RutaTurnoDAO {
 	 * @return Debe ser un objeto de tipo RutaTurno
 	 */
 	public RutaTurno seleccionar(Marca nMarca, Linea nLinea,Vehiculo nVehiculo){
-		
+		RutaTurno r = null;
+                
+                return r;
 	}
 	
 	

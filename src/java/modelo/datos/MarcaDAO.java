@@ -3,12 +3,9 @@ package modelo.datos;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jdk.nashorn.internal.ir.Statement;
-import modelo.mundo.Linea;
 import modelo.mundo.Marca;
 
 
@@ -44,7 +41,7 @@ public class MarcaDAO {
 	public ArrayList<Marca> seleccionar() throws ClassNotFoundException, SQLException{
                 ArrayList<Marca> Marcas;
                 Marcas = new ArrayList();
-		String seleccionar="select marca.nombre from marca";
+		String seleccionar="select marca.nombre from marca;";
 		Connection conexion;
             try {
                 conexion = fachada.conectarDB();
@@ -58,21 +55,21 @@ public class MarcaDAO {
 			while (resultado.next()) 
 			{
 				
-				String nNombre = resultado.getString("linea.nombre");
-                                Linea linea = new Linea(nNombre);
-                               Lineas.add(linea);
+                            String nNombre = resultado.getString("marca.nombre");
+                            Marca marca = new Marca(nNombre);
+                            Marcas.add(marca);
 
 			}
 			fachada.desconectarDB(conexion);
                     } catch (SQLException ex) {
-                        Logger.getLogger(LineaDAO.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(MarcaDAO.class.getName()).log(Level.SEVERE, null, ex);
                     }
 			
 		}
             } catch (ClassNotFoundException ex) {
-                Logger.getLogger(LineaDAO.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MarcaDAO.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
-                Logger.getLogger(LineaDAO.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MarcaDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
 		return Marcas;
 	}
@@ -83,12 +80,12 @@ public class MarcaDAO {
 	 * <b>pre:</b> El atributo fachadaDB ha sido inicializado<br>
 	 * <b>post:</b> Se ha modificado la marca ingresada como parametro
 	 * @param nMarca La marca actualizar en la base de datos nMarca!=null
-         * @param vNombre el viejo nombre de la marca
+         * @param vNombre != null && != "" Nombre de la marca a modificar
 	 */
 	public void actualizar(Marca nMarca, String vNombre)throws SQLException, ClassNotFoundException{
-             String actualizar= "update linea "
+             String actualizar= "update marca "
                                     + "set marca.nombre = " + nMarca.getNombre()   
-                                    + " where " + nMarca.getNombre()+" = vNombre";
+                                    + " where marca.nombre = " + vNombre + ";";
                                    
 		Connection conexion;
             try {
@@ -121,8 +118,8 @@ public class MarcaDAO {
 	 */
 	public void agregar(Marca nMarca) throws ClassNotFoundException, SQLException{
             
-            String agregar= "insert into marca(nombre ) "
-                                + "values ('"+ nMarca.getNombre()+"');";
+            String agregar= "insert into marca (marca.nombre) "
+                                + "values ( " + nMarca.getNombre() + ");";
 		Connection conexion;
             try {
                 conexion = fachada.conectarDB();
