@@ -4,14 +4,12 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import modelo.mundo.Linea;
 import modelo.mundo.Marca;
-import modelo.mundo.Vehiculo;
 
 
 /**
@@ -36,13 +34,15 @@ public class LineaDAO {
 	
 	/**
 	 * Lista almacenadora de objetos de tipo Marca
-	 * @param nMarca
+	 * @param nMarca != null Objeto de la clase Marca
 	 * @return
+         * @throws java.lang.ClassNotFoundException
+         * @throws java.sql.SQLException
 	 */
 	public ArrayList<Linea> seleccionar(Marca nMarca)throws ClassNotFoundException, SQLException{
             ArrayList<Linea> Lineas;
                 Lineas = new ArrayList();
-		String seleccionar="select marca.nombre from marca";
+		String seleccionar="select linea.nombre from linea where linea.marca_nombre = " + nMarca.getNombre() + ";";
 		Connection conexion;
             try {
                 conexion = fachada.conectarDB();
@@ -56,9 +56,9 @@ public class LineaDAO {
 			while (resultado.next()) 
 			{
 				
-				String nNombre = resultado.getString("linea.nombre");
-                                Linea linea = new Linea(nNombre);
-                               Lineas.add(linea);
+                            String nNombre = resultado.getString("linea.nombre");
+                            Linea linea = new Linea(nNombre);
+                            Lineas.add(linea);
 
 			}
 			fachada.desconectarDB(conexion);
@@ -79,15 +79,16 @@ public class LineaDAO {
 	
 	/**
 	 * Metodo encargado de actualizar la información de una línea en la base de datos
-	 * @param nMarca
-	 * @param nLinea
-         * @param vNombre 
+	 * @param nMarca != null Objeto de la clase Marca
+	 * @param nLinea != null Objeto de la clase Linea
+         * @param vNombre != null && != "" Nombre de la linea a cambiar
+         * @throws java.lang.ClassNotFoundException
+         * @throws java.sql.SQLException
 	 */
 	public void actualizar(Marca nMarca, Linea nLinea, String vNombre)throws ClassNotFoundException, SQLException{
-            String actualizar= "update linea "
-                                    + "set marca.nombre = " + nMarca.getNombre() + ", linea.nombre = " + nLinea.getNombre()  
-                                    + " where " + nLinea.getNombre()+" = vNombre"
-                                    + " and " + nMarca.getNombre() + " = linea.marca_nombre";
+            String actualizar= "update linea set linea.nombre = " + nLinea.getNombre()
+                                + " where linea.nombre = " + vNombre  
+                                + " and linea.marca_nombre = " + nMarca.getNombre() + ";";
 		Connection conexion;
             try {
                 conexion = fachada.conectarDB();
@@ -114,13 +115,14 @@ public class LineaDAO {
 	
 	/**
 	 * Metodo encargado de agregar una línea en la base de datos
-	 * @param nMarca
-	 * @param nLinea
-	 * @param nVehiculo
+	 * @param nMarca != null Objeto de la clase Marca
+	 * @param nLinea != null Objeto de la clase Linea
+         * @throws java.lang.ClassNotFoundException
+         * @throws java.sql.SQLException
 	 */
-	public void agregar(Marca nMarca, Linea nLinea, Vehiculo nVehiculo) throws ClassNotFoundException, SQLException{
-            String agregar= "insert into vehiculo (vehiculo.placa, vehiculo.modelo, vehiculo.numero_pasajeros, vehiculo.fotografia, vehiculo.linea_nombre,linea.Marca_nombre) "
-                                + "values ( " + nVehiculo.getPlaca() + ", " + nVehiculo.getModelo() + ", " + nVehiculo.getNumeroPasajeros() + ", " + nVehiculo.getFotografia() + ", " + nLinea.getNombre() + " ,"+ nMarca.getNombre()+");";
+	public void agregar(Marca nMarca, Linea nLinea) throws ClassNotFoundException, SQLException{
+            String agregar= "insert into linea (nombre, marca_nombre) "
+                                + "values ( " + nLinea.getNombre() + " ,"+ nMarca.getNombre()+");";
 		Connection conexion;
             try {
                 conexion = fachada.conectarDB();
@@ -147,13 +149,15 @@ public class LineaDAO {
 	
 	/**
 	 * Metodo encargado de eliminar una línea en la base de datos
-	 * @param nMarca
-	 * @param nLinea
-	 * @param nVehiculo
+	 * @param nMarca != null Objeto de la clase Marca
+	 * @param nLinea != null Objeto de la clase Linea
+         * @throws java.lang.ClassNotFoundException
+         * @throws java.sql.SQLException
 	 */
 	public void eliminar(Marca nMarca, Linea nLinea) throws ClassNotFoundException, SQLException{
 		String eliminar= "delete from linea "
-                                + "where linea.nombre = " + nLinea.getNombre() + ";";
+                                + "where linea.mara_nombre = " + nMarca.getNombre()
+                                + " and linea.nombre = " + nLinea.getNombre() + ";";
 		Connection conexion;
             try {
                 conexion = fachada.conectarDB();

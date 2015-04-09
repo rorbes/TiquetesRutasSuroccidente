@@ -31,7 +31,7 @@ public class TiqueteDAO {
 	 * @return Debe ser un objeto de tipo Tiquete
 	 */
 	public Tiquete seleccionar(Marca nMarca, Linea nLinea, Vehiculo nVehiculo){
-		
+		return null;
 	}
 	
 	
