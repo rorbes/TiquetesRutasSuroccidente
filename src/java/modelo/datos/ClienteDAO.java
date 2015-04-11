@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,40 +38,28 @@ public class ClienteDAO {
 	 * @return  Debe ser de tipo Cliente
          * <pre:> Tener inicializado el enlace a la clase Fachada DB <br>
          * <post:> Realizar seleccion de un cliente de la base de datos <br>
-         * @throws java.lang.ClassNotFoundException Excepción causada porque no se ha realizado una correcta conexión a la base de datos.
 	 */
-	public ArrayList<Cliente> seleccionar() throws ClassNotFoundException {
+	public ArrayList<Cliente> seleccionar(){
             ArrayList<Cliente> clientes = new ArrayList<>();
-            String seleccionar = "select * from cliente order by cliente.nombre asc;";
-            FachadaDB conexion;         
-                
+            String seleccionar = "select cliente.identificacion, cliente.nombre, cliente.apellidos from cliente order by cliente.nombre asc;";
+            Connection con;
+            PreparedStatement ps;
+            ResultSet res;
+            
             try {
-                conexion = (FachadaDB) fachada.conectarDB();
-                if(conexion!=null)
-                {
-                    PreparedStatement ps;
-                    try {
-                        
-                        ps = conexion.conectarDB().prepareStatement(seleccionar);
-                        ResultSet resultado= ps.executeQuery();
-                        while(resultado.next())
-                        {
-                            String nApellidosC = resultado.getString("apellidos");
-                            int nIdentificacionC = resultado.getInt("identificacion");
-                            String nNombreC = resultado.getString("nombre");
-
-                            clientes.add(new Cliente(nIdentificacionC, nNombreC, nApellidosC));
-                        }
-                        fachada.desconectarDB((Connection) conexion);
-                    } catch (ClassNotFoundException ex) {
-                        Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (SQLException ex) {
-                        Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }              
+                con = fachada.conectarDB();
+                ps = con.prepareStatement(seleccionar);
+                res = ps.executeQuery();
+                
+                while(res.next()){
+                    clientes.add(new Cliente(res.getInt(1), res.getString(2), res.getString(3)));
+                }
+                fachada.desconectarDB(con);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
                 Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            } 
             return clientes;
 	}
 	
@@ -88,21 +75,12 @@ public class ClienteDAO {
             String actualizar= "update cliente "
                                 + "set cliente.nombre = " + nCliente.getNombres() + ", cliente.apellidos = " + nCliente.getApellidos()
                                 + " where cliente.identificacion = " + nCliente.getIdentificacion() + ";";
-            Connection conexion;
+            Connection con; 
+            PreparedStatement ps;
             try {
-                conexion = fachada.conectarDB();
-                if(conexion!=null)
-		{
-			java.sql.Statement instruccion;
-                    try {
-                        instruccion = (java.sql.Statement) conexion.createStatement();
-                        instruccion.executeUpdate(actualizar);
-			fachada.desconectarDB(conexion);
-                    } catch (SQLException ex) {
-                        Logger.getLogger(MarcaDAO.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-			
-		}
+                con = fachada.conectarDB();
+                ps = con.prepareStatement(actualizar);
+                fachada.desconectarDB(con);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(MarcaDAO.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
@@ -118,27 +96,18 @@ public class ClienteDAO {
          * <post:> Se ha agregado un nuevo cliente en la base de datos. <br>
 	 */
 	public void agregar(Cliente nCliente) {
-            Connection conexion;
-            try {
-                conexion = fachada.conectarDB();
-                String agregar= "insert into cliente (cliente.identificacion, cliente.nombre, cliente.apellidos) "
+            String agregar= "insert into cliente (cliente.identificacion, cliente.nombre, cliente.apellidos) "
                             + "values ( " + nCliente.getIdentificacion() + ", " + nCliente.getNombres() + ", " + nCliente.getApellidos() + " );" ;
-                if(conexion!=null)
-                {
-                        Statement instruccion;
-                    try {
-                        instruccion = (Statement)conexion.createStatement();
-                        instruccion.execute(agregar);
-                        conexion.close();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-
-                }
+            Connection con; 
+            PreparedStatement ps;
+            try {
+                con = fachada.conectarDB();
+                ps = con.prepareStatement(agregar);
+                fachada.desconectarDB(con);
             } catch (ClassNotFoundException ex) {
-                Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MarcaDAO.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
-                Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MarcaDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
             	
 	}
@@ -151,27 +120,18 @@ public class ClienteDAO {
          * <post:> Se ha eliminado el cliente de la base de datos. <br>   
 	 */
 	public void eliminar(Cliente nCliente) {
-            Connection conexion;
-            try {
-                conexion = fachada.conectarDB();
-                String eliminar= "delete from cliente "
+            String eliminar= "delete from cliente "
                             + "where cliente.identifiacacion = " + nCliente.getIdentificacion() + ";";
-            if(conexion!=null)
-            {
-                    Statement instruccion;
-                try {
-                    instruccion = (Statement)conexion.createStatement();
-                    instruccion.execute(eliminar);
-                    conexion.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                    
-            }
+            Connection con; 
+            PreparedStatement ps;
+            try {
+                con = fachada.conectarDB();
+                ps = con.prepareStatement(eliminar);
+                fachada.desconectarDB(con);
             } catch (ClassNotFoundException ex) {
-                Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MarcaDAO.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
-                Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MarcaDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
             
 	}
